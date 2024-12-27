@@ -7,11 +7,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  IconButton,
   Tooltip,
+  Chip,
   Paper,
 } from "@mui/material";
+import { Edit, Download, Delete, CheckCircle } from "@mui/icons-material";
 
-const TaskTable = ({ tasks, onMarkAsDone, onDelete }) => {
+const TaskTable = ({
+  tasks,
+  onMarkAsDone,
+  onDownloadFile,
+  onEdit,
+  onDelete,
+}) => {
   const formatDate = (date) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(date).toLocaleDateString(undefined, options);
@@ -21,7 +30,6 @@ const TaskTable = ({ tasks, onMarkAsDone, onDelete }) => {
     const now = new Date();
     const deadlineDate = new Date(deadline);
 
-    console.log("getStatus", status);
     if (status === "DONE") {
       return now < deadlineDate ? "Achieved" : "In Progress";
     } else {
@@ -77,12 +85,36 @@ const TaskTable = ({ tasks, onMarkAsDone, onDelete }) => {
                 <br />
                 <code>{getStatus(task.deadline, task.status)}</code>
               </TableCell>
-              <TableCell>{task.status}</TableCell>
+              <TableCell>
+                <Chip
+                  label={task.status}
+                  color={task.status === "DONE" ? "success" : "warning"}
+                />
+              </TableCell>
               <TableCell>
                 {task.status === "TODO" && (
-                  <button onClick={() => onMarkAsDone(task._id)}>Done</button>
+                  <IconButton onClick={() => onMarkAsDone(task._id)}>
+                    <CheckCircle color="success" />
+                  </IconButton>
                 )}
-                <button onClick={() => onDelete(task._id)}>Delete</button>
+                {task.linkedFile && (
+                  <IconButton
+                    onClick={() =>
+                      onDownloadFile(
+                        new Uint8Array(task.linkedFile.data.data),
+                        task.linkedFile.contentType
+                      )
+                    }
+                  >
+                    <Download color="primary" />
+                  </IconButton>
+                )}
+                <IconButton onClick={() => onEdit(task)}>
+                  <Edit color="secondary" />
+                </IconButton>
+                <IconButton onClick={() => onDelete(task._id)}>
+                  <Delete color="error" />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}

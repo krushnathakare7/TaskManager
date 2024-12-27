@@ -11,7 +11,7 @@ const getTask = async (req,res) => {
 
 const newTask = async (req,res) => {
     try{
-
+    
        const {title, description, status, deadline } = req.body;
        const linkedFile = req.file ? {data: req.file.buffer, contentType: req.file.mimetype} : null;
    
