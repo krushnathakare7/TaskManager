@@ -14,6 +14,7 @@ export const TaskManager = () => {
   const [file, setFile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -60,25 +61,27 @@ export const TaskManager = () => {
 
     try {
       if (isEditing) {
-        await axios.patch(`http://localhost:8082/tasks/${taskData._id}`, {
+        setModalLoading(true);
+        await axios.patch(`https://taskmanager-x158.onrender.com/tasks/${taskData._id}`, {
           title: taskData.title,
           description: taskData.description,
           deadline: taskData.deadline,
         });
       } else {
-        console.log("formData in handleSave", formData);
-        await axios.post("http://localhost:8082/tasks", formData);
+        setModalLoading(true)
+        await axios.post("https://taskmanager-x158.onrender.com/tasks", formData);
       }
-      const response = await axios.get("http://localhost:8082/tasks");
+      const response = await axios.get("https://taskmanager-x158.onrender.com/tasks");
       setTasks(response.data);
       handleClose();
     } catch (err) {
       console.error("Error saving task:", err);
+    } finally{
+      setModalLoading(false);
     }
   };
 
   const handleFileChange = (event) => {
-    console.log("handleFileChange invoked, event: ", event);
     if (event.target.files.length) {
       setFile(event.target.files[0]);
     } else {
@@ -88,10 +91,10 @@ export const TaskManager = () => {
 
   const handleMarkAsDone = async (taskId) => {
     try {
-      await axios.patch(`http://localhost:8082/tasks/${taskId}`, {
+      await axios.patch(`https://taskmanager-x158.onrender.com/tasks/${taskId}`, {
         status: "DONE",
       });
-      const response = await axios.get("http://localhost:8082/tasks");
+      const response = await axios.get("https://taskmanager-x158.onrender.com/tasks");
       setTasks(response.data);
     } catch (err) {
       console.error("Error updating task:", err);
@@ -113,11 +116,14 @@ export const TaskManager = () => {
   const handleDelete = async (taskId) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
-        await axios.delete(`http://localhost:8082/tasks/${taskId}`);
-        const response = await axios.get("http://localhost:8082/tasks");
+        setLoading(true);
+        await axios.delete(`https://taskmanager-x158.onrender.com/tasks/${taskId}`);
+        const response = await axios.get("https://taskmanager-x158.onrender.com/tasks");
         setTasks(response.data);
       } catch (err) {
         console.error("Error deleting task:", err);
+      } finally {
+        setLoading(false)
       }
     }
   };
@@ -157,6 +163,7 @@ export const TaskManager = () => {
         handleFileChange={handleFileChange}
         file={file}
         isEditing={isEditing}
+        isLoading = {modalLoading}
       />
       
 <Fab

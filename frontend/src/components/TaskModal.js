@@ -3,7 +3,7 @@ import React from "react";
 import { Modal, TextField, Button, Box, IconButton } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { Delete } from "@mui/icons-material";
-
+import { LoadingIndicator } from "./CircularProgress";
 
 
 const TaskModal = ({
@@ -15,6 +15,7 @@ const TaskModal = ({
   handleFileChange,
   file,
   isEditing,
+  isLoading
 }) => {
   const formatDateForInput = (dateString) => {
     if (!dateString) return "";
@@ -25,8 +26,9 @@ const TaskModal = ({
     return `${year}-${month}-${day}`;
   };
 
-  return (
+  return ( 
     <Modal open={open} onClose={handleClose}>
+      {isLoading ? (<LoadingIndicator />) :
       <Box
         component="form"
         sx={{
@@ -101,7 +103,7 @@ const TaskModal = ({
             {isEditing ? "Update" : "Save"}
           </Button>
         </Box>
-      </Box>
+      </Box>}
     </Modal>
   );
 };
