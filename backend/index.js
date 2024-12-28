@@ -26,7 +26,9 @@ app.get('/', (req,res)=>{
 
 app.use('/tasks', taskRoutes)
 
-mongoose.connect('mongodb://localhost:27017/todoApp', {
+const DB_URI = "mongodb+srv://krushnathakare27:MQT9UWVRYh8EQhw4@cluster0.2y2hj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose.connect(DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(()=> console.log('Connected to DB..!!'))

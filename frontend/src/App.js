@@ -2,7 +2,7 @@
 import './App.css';
 import { Container } from '@mui/material';
 import {Nav} from './components/AppBar'
-import { TaskManager } from './components/TaskManager';
+import  {TaskManager}  from './components/TaskManager';
 
 
 function App() {
